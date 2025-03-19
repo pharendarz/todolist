@@ -13,8 +13,13 @@ Możesz użyć dodanych bibliotek oraz własnych i
 
 1. Zrób, aby menu w wersji mobilnej ukrywało się i
  wyświetlało po naciśnięciu przycisku "hamburger".
+
+
 2. Dodaj komponenty list i add, dodaj je do routera 
 aplikacji z możliwością ich przełączania z menu.
+
+
+
 3. Dodaj do aplikacji magazyn danych na listę "todo" 
 która będzie zawierać listę zadań składających się z
  pól date, location, content, display.

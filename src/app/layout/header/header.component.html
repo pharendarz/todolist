@@ -52,12 +52,14 @@
         <div class="hidden sm:ml-6 sm:block">
           <div class="flex space-x-4">
             <a
-              href="#"
+              [routerLink]="'list'"
+              routerLinkActive="todo-active-link"
               class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
               >List</a
             >
             <a
-              href="#"
+              [routerLink]="'add'"
+              routerLinkActive="todo-active-link"
               class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
               >Add</a
             >
@@ -101,15 +103,16 @@
   >
     <div class="space-y-1 px-2 pb-3 pt-2">
       <a
-        href="#"
+        [routerLink]="'list'"
         class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
         >List</a
       >
       <a
-        href="#"
+        [routerLink]="'add'"
         class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
         >Add</a
       >
     </div>
   </div>
 </nav>
+<router-outlet></router-outlet>

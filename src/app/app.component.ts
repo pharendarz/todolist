@@ -1,7 +1,6 @@
 import { LayoutModule } from './layout/layout.module';
 import { RouterOutlet } from '@angular/router';
 import { Component } from '@angular/core';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @Component({
   selector: 'app-root',
