@@ -7,6 +7,9 @@
 // todo handle errors
 // clean tailwind from unused classes p=text-grey-500
 // todo add more tests
+// todo create base component with ngDestroy
+// go through all types and put them in separtate files
+// todo refactor modules
 import {
   ApplicationConfig,
   importProvidersFrom,

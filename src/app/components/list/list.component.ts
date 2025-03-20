@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import {
   addTodo,
   hideEmptyTodos,
@@ -7,7 +7,17 @@ import {
 import { Todo } from '../../models/todo.model';
 import { Store } from '@ngrx/store';
 import { selectAllTodos } from '../../store/list.selectors';
-import { catchError, map, Observable, of, switchMap, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  catchError,
+  combineLatest,
+  debounceTime,
+  map,
+  Observable,
+  of,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import { ListFilter } from '../../enums/list-filter.enum';
 import { DataTransferService } from '../../services/data-transfer.service';
@@ -27,20 +37,23 @@ export class ListComponent implements OnInit {
   protected listFilter = ListFilter;
   protected currentFilter?: ListFilter;
 
-  protected todos$: Observable<Todo[]>;
+  private searchTextSubject = new BehaviorSubject<string>('');
+  protected filteredTodos$: Observable<Todo[]>;
 
   protected searchText = '';
+
+  protected isLoading = signal(true);
 
   constructor(
     private store: Store,
     private readonly dataTransferService: DataTransferService,
     private readonly lss: LocalStorageService,
   ) {
-    this.todos$ = this.loadStore();
+    this.filteredTodos$ = this.loadStore();
   }
 
   ngOnInit(): void {
-    // load filters from lss
+    // Load filters from lss
     const filterValue = this.lss.getItem('listFilter');
     const searchValue = this.lss.getItem('listSearch');
 
@@ -49,6 +62,7 @@ export class ListComponent implements OnInit {
     }
     if (searchValue) {
       this.searchText = JSON.parse(searchValue).value;
+      this.searchTextSubject.next(this.searchText);
     }
   }
 
@@ -61,56 +75,67 @@ export class ListComponent implements OnInit {
     );
   }
 
-  private loadStore(): Observable<Todo[]> {
-    return this.store.select(selectAllTodos).pipe(
-      map((todos: Todo[]) => todos.filter((todo) => todo.display)),
-      // Chain the geocoding request
-      switchMap((todos: Todo[]) => {
+  private loadStore() {
+    return combineLatest([
+      this.store.select(selectAllTodos),
+      this.searchTextSubject.asObservable(),
+    ]).pipe(
+      debounceTime(500),
+      // Filter by search text
+      map(([todos, search]) => {
+        // Show loading spinner
+        this.isLoading.set(true);
+
+        const displayed = todos.filter((todo) => todo.display);
+        return displayed.filter((todo) =>
+          todo.location?.toLowerCase().includes(search.toLowerCase()),
+        );
+      }),
+      // Then run geocoding on the first filtered todo
+      switchMap((todos) => {
         const firstTodo = todos[0];
-        // If there's no todo, return the todos as is
         if (!firstTodo) {
           return of(todos);
         }
         return this.dataTransferService
           .getGeocodingLongLat(firstTodo.location)
           .pipe(
-            // Chain the weather request using the geocoding result
             switchMap((geoData) => {
-              if (geoData && !geoData.results) {
+              const loc = geoData?.results?.[0];
+              if (!loc) {
+                // No location found, just return todos
                 return of(todos);
               }
-              const location = geoData?.results[0];
-              // If there's no location, return the todos as is
-              if (!location) {
-                return of(todos);
-              }
+              // If location found, fetch weather
               return this.dataTransferService
-                .getWeather(location.longitude, location.latitude)
+                .getWeather(loc.longitude, loc.latitude)
                 .pipe(
-                  map((weatherData, i) => {
-                    // throw new Error('dummy error');
-                    // If there's at least one todo, map it with longitude, latitude, temperature
-                    if (todos.length > 0 && i === 0) {
-                      const updatedFirstTodo: Todo = {
-                        ...todos[0],
-                        long: location.longitude,
-                        lat: location.latitude,
-                        temperature: this.extractWeatherData(weatherData),
-                      };
-                      return [updatedFirstTodo, ...todos.slice(1)];
-                    }
-                    return todos;
+                  map((weatherData) => {
+                    const updatedFirst = {
+                      ...firstTodo,
+                      long: loc.longitude,
+                      lat: loc.latitude,
+                      temperature: this.extractWeatherData(weatherData),
+                    };
+                    // Replace only the first todo
+                    return [updatedFirst, ...todos.slice(1)];
+                  }),
+                  catchError(() => {
+                    // On error, just return the original todos
+                    return of(todos);
                   }),
                 );
             }),
-            catchError((err) => {
-              console.error(err);
-              return of(todos);
-            }),
+            catchError(() => of(todos)),
           );
+      }),
+      tap(() => {
+        // Hide loading spinner
+        this.isLoading.set(false);
       }),
     );
   }
+
   private extractWeatherData(weatherData: WeatherResponseDto): string {
     const temperature = weatherData?.current?.temperature_2m;
     const temperatureUnit = weatherData?.current_units?.temperature_2m;
@@ -127,12 +152,15 @@ export class ListComponent implements OnInit {
   protected onFilterClick(): void {
     this.isSubMenuOpen = !this.isSubMenuOpen;
   }
+
   protected onSearchChange(value: string): void {
     this.localStorageItem = {
       key: 'listSearch',
       value,
     };
+    this.searchTextSubject.next(value);
   }
+
   protected onHideEmpty(): void {
     this.isSubMenuOpen = false;
     this.currentFilter = ListFilter.HideEmpty;
@@ -145,7 +173,6 @@ export class ListComponent implements OnInit {
 
   protected onShowAll(): void {
     this.isSubMenuOpen = false;
-
     this.searchText = '';
     this.lss.removeItem('listSearch');
 
@@ -156,5 +183,6 @@ export class ListComponent implements OnInit {
     };
 
     this.store.dispatch(showEmptyTodos());
+    this.searchTextSubject.next(this.searchText);
   }
 }

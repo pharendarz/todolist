@@ -44,11 +44,7 @@
 </div>
 
 <div class="mt-4 space-y-4 w-4/5 mx-auto">
-  @for (
-    todo of (todos$ | async)! | textFilter: searchText : "location";
-    track i;
-    let i = $index
-  ) {
+  @for (todo of filteredTodos$ | async; track i; let i = $index) {
     <div
       class="p-4 border border-gray-200 rounded-md shadow-sm"
       [ngClass]="{
@@ -100,3 +96,11 @@
     </div>
   }
 </div>
+
+<!-- @if (!(filteredTodos$ | async)?.length) {
+  <p class="text-center mt-4 text-gray-700">No todos found</p>
+} -->
+
+@if (isLoading()) {
+  <todo-spinner></todo-spinner>
+}
