@@ -4,11 +4,23 @@ import { HeaderComponent } from './header/header.component';
 import { SharedModule } from '../shared/shared.module';
 import { RouterModule } from '@angular/router';
 import { ListComponent } from '../components/list/list.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AddComponent } from '../components/list/add/add.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { provideHttpClient } from '@angular/common/http';
 
 @NgModule({
-  declarations: [HeaderComponent],
+  declarations: [HeaderComponent, ListComponent, AddComponent],
   // todo common module - shared module?
-  imports: [CommonModule, SharedModule, RouterModule],
+  imports: [
+    CommonModule,
+    SharedModule,
+    RouterModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatSnackBarModule,
+  ],
+
   exports: [HeaderComponent],
 })
 export class LayoutModule {}

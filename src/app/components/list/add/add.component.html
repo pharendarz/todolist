@@ -1,1 +1,86 @@
-<p>add works!</p>
+<form
+  (ngSubmit)="onSubmit()"
+  [formGroup]="form"
+  class="space-y-4 max-w-sm mx-auto mt-20 p-4 border border-gray-200 rounded-md shadow-sm"
+>
+  <!-- Date -->
+  <div>
+    <label for="date" class="block mb-1 text-sm font-medium text-gray-700"
+      >Date</label
+    >
+    <input
+      id="date"
+      formControlName="date"
+      type="text"
+      class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm placeholder-gray-400 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+      placeholder="YYYY-MM-DD"
+    />
+    @if (form.get("date")?.hasError("required") && form.get("date")?.touched) {
+      <p class="text-red-500 text-sm">Date is required</p>
+    }
+    @if (
+      form.get("date")?.hasError("invalidDate") && form.get("date")?.touched
+    ) {
+      <p class="text-red-500 text-sm">Date format is invalid</p>
+    }
+  </div>
+
+  <!-- Location -->
+  <div>
+    <label for="location" class="block mb-1 text-sm font-medium text-gray-700"
+      >Location</label
+    >
+    <input
+      formControlName="location"
+      type="text"
+      class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm placeholder-gray-400 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+      placeholder="Enter location"
+    />
+    @if (
+      form.get("location")?.hasError("required") &&
+      form.get("location")?.touched
+    ) {
+      <p class="text-red-500 text-sm">Location is required</p>
+    }
+  </div>
+
+  <!-- Content -->
+  <div>
+    <label for="content" class="block mb-1 text-sm font-medium text-gray-700"
+      >Content</label
+    >
+    <textarea
+      formControlName="content"
+      rows="3"
+      class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm placeholder-gray-400 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+      placeholder="Task details"
+    ></textarea>
+    @if (
+      form.get("content")?.hasError("required") && form.get("content")?.touched
+    ) {
+      <p class="text-red-500 text-sm">Content is required</p>
+    }
+  </div>
+
+  <!-- Display -->
+  <div class="flex items-center">
+    <input
+      type="checkbox"
+      formControlName="display"
+      class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+    />
+    <label for="display" class="ml-2 text-sm text-gray-700">Show task</label>
+  </div>
+
+  <button
+    type="submit"
+    [disabled]="form.invalid"
+    [ngClass]="{
+      'bg-indigo-300 cursor-not-allowed': form.invalid,
+      'bg-indigo-600 hover:bg-indigo-700': form.valid,
+    }"
+    class="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+  >
+    Add
+  </button>
+</form>

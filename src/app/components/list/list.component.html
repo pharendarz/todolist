@@ -1,9 +1,102 @@
-<p>list works!</p>
-<p>list works!</p>
-<p>list works!</p>
-<p>list works!</p>
-<p>list works!</p>
-<p>list works!</p>
-<p>list works!</p>
-<p>list works!</p>
-<p>list works!</p>
+<div class="flex items-center space-x-2 mt-20 w-4/5 mx-auto">
+  <input
+    id="searchText"
+    type="text"
+    [(ngModel)]="searchText"
+    (ngModelChange)="onSearchChange($event)"
+    placeholder="Search by location"
+    class="flex-grow rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+  />
+  <!-- Filter button & sub-menu container -->
+  <div class="relative inline-block text-left">
+    <button
+      type="button"
+      id="filterButton"
+      class="p-2 bg-gray-800 text-gray-400 rounded transition hover:text-white focus:outline-none"
+      (click)="onFilterClick()"
+    >
+      <fa-icon [icon]="faFilter"></fa-icon>
+      <span
+        *ngIf="currentFilter && currentFilter !== listFilter.ShowAll"
+        class="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"
+      ></span>
+    </button>
+
+    <!-- Sub-menu -->
+    <div
+      class="absolute right-0 mt-2 w-32 rounded-md bg-white shadow-lg z-50"
+      [ngClass]="{ hidden: !isSubMenuOpen, block: isSubMenuOpen }"
+    >
+      <button
+        class="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+        (click)="onHideEmpty()"
+      >
+        {{ listFilter.HideEmpty }}
+      </button>
+      <button
+        class="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+        (click)="onShowAll()"
+      >
+        {{ listFilter.ShowAll }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="mt-4 space-y-4 w-4/5 mx-auto">
+  @for (
+    todo of (todos$ | async)! | textFilter: searchText : "location";
+    track i;
+    let i = $index
+  ) {
+    <div
+      class="p-4 border border-gray-200 rounded-md shadow-sm"
+      [ngClass]="{
+        'bg-yellow-100': !todo.date || !todo.location || !todo.content,
+      }"
+    >
+      <!-- Grid container -->
+      <div class="grid grid-cols-2 gap-4">
+        <!-- Left column -->
+        <div>
+          <p class="text-sm text-gray-700 font-medium">
+            <span class="text-gray-400">Date:</span> {{ todo.date || "EMPTY" }}
+          </p>
+          <p class="text-sm text-gray-700 font-medium mt-1">
+            <span class="text-gray-400">Location:</span>
+            {{ todo.location || "EMPTY" }}
+          </p>
+          <p class="text-sm text-gray-700 font-medium mt-1">
+            <span class="text-gray-400">Content:</span>
+            {{ todo.content || "EMPTY" }}
+          </p>
+        </div>
+
+        <!-- Right column -->
+        <div>
+          <p class="text-sm font-medium">
+            <span class="text-gray-400">Display:</span> {{ todo.display }}
+          </p>
+          @if (i === 0 && todo.long && todo.lat) {
+            <p class="text-sm font-medium mt-1">
+              <span class="text-gray-400">Longitude:</span>
+              {{ todo.long || "EMPTY" }}
+            </p>
+            <p class="text-sm font-medium mt-1">
+              <span class="text-gray-400">Latitude:</span>
+              {{ todo.lat || "EMPTY" }}
+            </p>
+            <p class="text-sm font-medium mt-1">
+              <span class="text-gray-400">Weather:</span>
+              {{ todo.temperature || "EMPTY" }}
+            </p>
+          } @else if (i === 0) {
+            <p class="text-sm font-medium mt-1">
+              <span class="text-red-400">Can't find location long & lat</span>
+            </p>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</div>

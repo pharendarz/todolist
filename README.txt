@@ -1,3 +1,10 @@
+Please run application via command below (CORS problem workaround):
+
+ng serve --proxy-config proxy.conf.json
+
+
+
+style: purple pink with stripes in the background 
 
 
 Plik z zadaniem zawiera projekt Angular z dodanymi 
@@ -22,17 +29,33 @@ aplikacji z możliwością ich przełączania z menu.
 
 3. Dodaj do aplikacji magazyn danych na listę "todo" 
 która będzie zawierać listę zadań składających się z
- pól date, location, content, display.
+ pól date, location, content, display. [done]
+
+* create stylings with tailwind
+* TRAIN YOURSELF WITH OTHER REDUCERS AND SELECTORS - YOU DON'T KNOW IT YET - you could be asked about it (could be at val di sole)
+
 4. Dodaj predefiniowaną listę przykładowych zadań
+[done]
+
 5. W komponencie list dodaj wyświetlanie listy zadań 
-których parametr display ma wartość true.
+których parametr display ma wartość true. [done]
+
+
 6. Dodaj na górze listy filtr tekstowy który będzie 
 stawiać display na false dla zadań w których pola date,
- location i content nie zawierają wpisanej wartości.
+ location i content nie zawierają wpisanej wartości. [done]
+
+* dodaj kropczekę mówiącą, ze filtr jest aktywny (albo kolor zmien)
+
 7. Dodaj w komponencie add formularz który będzie 
 dodawał kolejne zadanie do listy zadań.
+
+* create form - reactive form with validators [custom validator welcomed]
+
 8. Dodaj przy ikonie dzwonka w menu sumaryczną liczbę 
-zadań na dziś i przyszłość 
+zadań na dziś i przyszłość [done]
+
+
 9. Przy wyświetlaniu komponentu list dodaj funkcjonalność 
 która będzie dla PIERWSZEGO wyświetlanego zadania odpytywać api 
 pod adresem
@@ -41,8 +64,12 @@ pod adresem
 	 zadania pobrane latitude i longitude z pierwszego 
 	 wyniku zapytania lub wyświetlać informację o
 	  nieudanym odnalezieniu lokalizacji.
+
+		* add spinner
 10. Dla powyższego zadania dodaj wykonywanie dodatkowo zapytania 
 do api pod adresem
-	https://api.open-meteo.com/v1/forecast?latitude=LATITUDE&longitude=LONGITUDE&current=temperature_2m
+	https://api.open-meteo.com/v1/forecast?latitude=44.24941&longitude=-93.39383&current=temperature_2m
 	Wstawiając odpowiednio parametry latitude i longitude. Zwrócony parametr temperature_2m zapisz do obiektu zadania i wyświetl na liście zadań.
+
+	* add spinner
 	

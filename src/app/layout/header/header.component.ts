@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { faGhost } from '@fortawesome/free-solid-svg-icons';
+import { CounterService } from '../../services/counter.service';
 
 @Component({
   selector: 'todo-header',
@@ -9,6 +10,8 @@ import { faGhost } from '@fortawesome/free-solid-svg-icons';
 export class HeaderComponent {
   protected faGhost = faGhost;
   protected isOpen = false;
+
+  constructor(protected readonly counterService: CounterService) {}
 
   toggleMenu() {
     this.isOpen = !this.isOpen;
