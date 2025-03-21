@@ -1,9 +1,4 @@
-// todo additionaly - provide unit tests to the project
-// todo create @imports for the project
-// todo create aot build
 // todo change components to directives where possible
-// todo erase all dead imports
-// todo make linter to check if method return type is correct
 // todo split components to smaller ones
 // clean tailwind from unused classes p=text-grey-500
 // todo add more tests
