@@ -110,3 +110,10 @@
 @if (isLoading()) {
   <todo-spinner></todo-spinner>
 }
+
+@if (showSnackbar) {
+  <todo-snackbar
+    [content]="snackbarMessage"
+    (closed)="showSnackbar = false"
+  ></todo-snackbar>
+}

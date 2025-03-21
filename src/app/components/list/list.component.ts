@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
   HostListener,
@@ -22,6 +23,7 @@ import {
   map,
   Observable,
   of,
+  shareReplay,
   switchMap,
   tap,
 } from 'rxjs';
@@ -31,13 +33,15 @@ import { DataTransferService } from '../../services/data-transfer.service';
 import { WeatherResponseDto } from '../../models/dto/weather.response';
 import { LocalStorageService } from '../../services/local-storage.service';
 import { Value } from '../../enums/value.enum';
+import { BaseComponent } from '../base/base.component';
 
 @Component({
   selector: 'todo-list',
   templateUrl: './list.component.html',
   styleUrl: './list.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ListComponent implements OnInit {
+export class ListComponent extends BaseComponent implements OnInit {
   @ViewChild('filterMenu', { static: false }) filterMenu!: ElementRef;
 
   // todo move filter to separate component
@@ -60,6 +64,7 @@ export class ListComponent implements OnInit {
     private readonly dataTransferService: DataTransferService,
     private readonly lss: LocalStorageService,
   ) {
+    super();
     this.filteredTodos$ = this.loadStore();
   }
 
@@ -117,10 +122,15 @@ export class ListComponent implements OnInit {
       tap(() => this.isLoading.set(false)),
 
       // Fallback if something unexpected fails
-      catchError(() => {
+      catchError((err) => {
+        this.showSnackbarMessage({
+          message: 'Error loading todos: ' + err,
+          error: true,
+        });
         this.isLoading.set(false);
         return of([]);
       }),
+      shareReplay(1),
     );
   }
 
@@ -163,14 +173,26 @@ export class ListComponent implements OnInit {
                 // Replace only the first todo in the result
                 return [updatedFirst, ...todos.slice(1)];
               }),
-              catchError(() => of(todos)), // Return original todos if weather fails
+              catchError((err) => {
+                this.showSnackbarMessage({
+                  message: 'Weather fetch failed: ' + err,
+                  error: true,
+                });
+                return of(todos);
+              }), // Return original todos if weather fails
             );
         }),
-        catchError(() => of(todos)), // Return original todos if geocoding fails
+        catchError((err) => {
+          this.showSnackbarMessage({
+            message: 'Geocoding fetch failed: ' + err,
+            error: true,
+          });
+          return of(todos);
+        }), // Return original todos if geocoding fails
       );
   }
 
-  private extractWeatherData(weatherData: WeatherResponseDto): string {
+  private extractWeatherData(weatherData: WeatherResponseDto | null): string {
     const temperature = weatherData?.current?.temperature_2m;
     const temperatureUnit = weatherData?.current_units?.temperature_2m;
     if (!temperature || !temperatureUnit) {

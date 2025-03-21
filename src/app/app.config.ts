@@ -1,6 +1,8 @@
 // todo additionaly - provide linter to the project
 // todo additionaly - provide unit tests to the project
 // todo create @imports for the project
+// todo lazy loading
+// todo create aot build
 // todo erase all dead imports
 // todo make linter to check if method return type is correct
 // todo split components to smaller ones
@@ -11,6 +13,9 @@
 // go through all types and put them in separtate files
 // todo refactor modules
 // todo guards for routes - 404 page
+// todo clean github (set repos as private)
+// todo add protected & readonly to all properties
+// todo clean unused scss and scss url in component
 import {
   ApplicationConfig,
   importProvidersFrom,

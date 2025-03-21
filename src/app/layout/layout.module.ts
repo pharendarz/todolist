@@ -6,7 +6,6 @@ import { RouterModule } from '@angular/router';
 import { ListComponent } from '../components/list/list.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AddComponent } from '../components/list/add/add.component';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SpinnerComponent } from '../components/spinner/spinner.component';
 
 @NgModule({
@@ -23,7 +22,6 @@ import { SpinnerComponent } from '../components/spinner/spinner.component';
     RouterModule,
     FormsModule,
     ReactiveFormsModule,
-    MatSnackBarModule,
   ],
 
   exports: [HeaderComponent],

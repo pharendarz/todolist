@@ -6,4 +6,15 @@ import { Component } from '@angular/core';
   imports: [],
   templateUrl: './base.component.html',
 })
-export class BaseComponent {}
+export class BaseComponent {
+  protected showSnackbar = false;
+  protected snackbarMessage?: { message: string; error?: boolean };
+
+  protected showSnackbarMessage(content: {
+    message: string;
+    error?: boolean;
+  }): void {
+    this.showSnackbar = true;
+    this.snackbarMessage = content;
+  }
+}

@@ -1,28 +1,34 @@
-import { Component } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ViewEncapsulation,
+} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Todo } from '../../../models/todo.model';
 import { Store } from '@ngrx/store';
 import { addTodo } from '../../../store/list.actions';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { dateFormatValidator } from '../../../tools/custom-form-validators/date-format-validator';
 import { CounterService } from '../../../services/counter.service';
+import { BaseComponent } from '../../base/base.component';
 @Component({
   selector: 'todo-add',
   templateUrl: './add.component.html',
   styleUrl: './add.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None,
 })
-export class AddComponent {
-  public form: FormGroup;
+export class AddComponent extends BaseComponent {
+  protected form: FormGroup;
 
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly store: Store,
-    private readonly snackBar: MatSnackBar,
     private readonly counterService: CounterService,
   ) {
+    super();
     this.form = this.formBuilder.group({
       date: [
-        { value: '', disabled: false },
+        { value: '2025-04-11', disabled: false },
         [Validators.required, dateFormatValidator()],
       ],
       location: [{ value: '', disabled: false }, Validators.required],
@@ -33,12 +39,13 @@ export class AddComponent {
 
   protected onSubmit(): void {
     const newTodo: Todo = this.form.value;
-    // newTodo.date = new Date().toISOString();
+
     this.store.dispatch(addTodo({ todo: newTodo }));
-    this.form.reset();
+
     this.counterService.setCounter();
-    this.snackBar.open('Todo added!', '', {
-      duration: 3000,
-    });
+
+    this.showSnackbarMessage({ message: 'Todo added successfully' });
+
+    this.form.reset();
   }
 }

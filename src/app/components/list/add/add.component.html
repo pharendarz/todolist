@@ -1,7 +1,7 @@
 <form
   (ngSubmit)="onSubmit()"
   [formGroup]="form"
-  class="space-y-4 max-w-sm mx-auto mt-20 p-4 border border-gray-200 rounded-md shadow-sm"
+  class="space-y-4 max-w-sm mx-auto pt-20 p-4 border bg-indigo-100 border-gray-200 rounded-md shadow-sm"
 >
   <!-- Date -->
   <div>
@@ -84,3 +84,10 @@
     Add
   </button>
 </form>
+
+@if (showSnackbar) {
+  <todo-snackbar
+    [content]="snackbarMessage"
+    (closed)="showSnackbar = false"
+  ></todo-snackbar>
+}
