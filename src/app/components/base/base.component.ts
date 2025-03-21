@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'todo-base',
   standalone: true,
   imports: [],
   templateUrl: './base.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BaseComponent {
   protected showSnackbar = false;

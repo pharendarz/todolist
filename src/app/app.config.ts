@@ -3,16 +3,15 @@
 // todo create @imports for the project
 // todo lazy loading
 // todo create aot build
+// todo change components to directives where possible
 // todo erase all dead imports
 // todo make linter to check if method return type is correct
 // todo split components to smaller ones
-// todo handle errors
 // clean tailwind from unused classes p=text-grey-500
 // todo add more tests
 // todo create base component with ngDestroy
 // go through all types and put them in separtate files
 // todo refactor modules
-// todo guards for routes - 404 page
 // todo clean github (set repos as private)
 // todo add protected & readonly to all properties
 // todo clean unused scss and scss url in component

@@ -1,4 +1,10 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
@@ -16,6 +22,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
       ]),
     ]),
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CustomSnackbarComponent {
   @Input() content?: { message: string; error?: boolean };

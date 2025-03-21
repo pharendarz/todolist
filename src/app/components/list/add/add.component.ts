@@ -10,12 +10,14 @@ import { addTodo } from '../../../store/list.actions';
 import { dateFormatValidator } from '../../../tools/custom-form-validators/date-format-validator';
 import { CounterService } from '../../../services/counter.service';
 import { BaseComponent } from '../../base/base.component';
+import { CustomSnackbarComponent } from '../../snackbar/snackbar.component';
 @Component({
   selector: 'todo-add',
   templateUrl: './add.component.html',
   styleUrl: './add.component.scss',
+  standalone: true,
+  imports: [CustomSnackbarComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.None,
 })
 export class AddComponent extends BaseComponent {
   protected form: FormGroup;

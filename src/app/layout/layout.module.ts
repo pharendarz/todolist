@@ -9,12 +9,7 @@ import { AddComponent } from '../components/list/add/add.component';
 import { SpinnerComponent } from '../components/spinner/spinner.component';
 
 @NgModule({
-  declarations: [
-    HeaderComponent,
-    ListComponent,
-    AddComponent,
-    SpinnerComponent,
-  ],
+  declarations: [HeaderComponent, ListComponent, SpinnerComponent],
   // todo common module - shared module?
   imports: [
     CommonModule,
