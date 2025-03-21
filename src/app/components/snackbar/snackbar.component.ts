@@ -6,11 +6,14 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'todo-snackbar',
   templateUrl: './snackbar.component.html',
   styleUrls: ['./snackbar.component.scss'],
+  standalone: true,
+  imports: [CommonModule],
   animations: [
     trigger('snackbarAnimation', [
       transition(':enter', [

@@ -3,7 +3,12 @@ import {
   Component,
   ViewEncapsulation,
 } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Todo } from '../../../models/todo.model';
 import { Store } from '@ngrx/store';
 import { addTodo } from '../../../store/list.actions';
@@ -11,12 +16,13 @@ import { dateFormatValidator } from '../../../tools/custom-form-validators/date-
 import { CounterService } from '../../../services/counter.service';
 import { BaseComponent } from '../../base/base.component';
 import { CustomSnackbarComponent } from '../../snackbar/snackbar.component';
+import { CommonModule } from '@angular/common';
 @Component({
   selector: 'todo-add',
   templateUrl: './add.component.html',
   styleUrl: './add.component.scss',
   standalone: true,
-  imports: [CustomSnackbarComponent],
+  imports: [CustomSnackbarComponent, CommonModule, ReactiveFormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddComponent extends BaseComponent {
@@ -30,7 +36,7 @@ export class AddComponent extends BaseComponent {
     super();
     this.form = this.formBuilder.group({
       date: [
-        { value: '2025-04-11', disabled: false },
+        { value: '', disabled: false },
         [Validators.required, dateFormatValidator()],
       ],
       location: [{ value: '', disabled: false }, Validators.required],

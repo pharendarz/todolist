@@ -34,12 +34,27 @@ import { WeatherResponseDto } from '../../models/dto/weather.response';
 import { LocalStorageService } from '../../services/local-storage.service';
 import { Value } from '../../enums/value.enum';
 import { BaseComponent } from '../base/base.component';
+import { CustomSnackbarComponent } from '../snackbar/snackbar.component';
+import { CommonModule } from '@angular/common';
+import { SpinnerComponent } from '../spinner/spinner.component';
+import { TemperatureColorPipe } from '../../pipes/temperature-color.pipe';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'todo-list',
   templateUrl: './list.component.html',
   styleUrl: './list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    CustomSnackbarComponent,
+    SpinnerComponent,
+    CommonModule,
+    TemperatureColorPipe,
+    FontAwesomeModule,
+    FormsModule,
+  ],
 })
 export class ListComponent extends BaseComponent implements OnInit {
   @ViewChild('filterMenu', { static: false }) filterMenu!: ElementRef;

@@ -3,13 +3,10 @@ import { CommonModule } from '@angular/common';
 import { HeaderComponent } from './header/header.component';
 import { SharedModule } from '../shared/shared.module';
 import { RouterModule } from '@angular/router';
-import { ListComponent } from '../components/list/list.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AddComponent } from '../components/list/add/add.component';
-import { SpinnerComponent } from '../components/spinner/spinner.component';
 
 @NgModule({
-  declarations: [HeaderComponent, ListComponent, SpinnerComponent],
+  declarations: [HeaderComponent],
   // todo common module - shared module?
   imports: [
     CommonModule,

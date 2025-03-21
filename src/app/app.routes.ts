@@ -16,7 +16,10 @@ export const routes: Routes = [
     children: [
       {
         path: 'list',
-        component: ListComponent,
+        loadComponent: () =>
+          import('./components/list/list.component').then(
+            (m) => m.ListComponent,
+          ),
       },
       {
         path: 'add',
@@ -29,7 +32,10 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    component: NotFoundComponent,
+    loadComponent: () =>
+      import('./pages/not-found/not-found.component').then(
+        (m) => m.NotFoundComponent,
+      ),
   },
 ];
 // can activate? todo
