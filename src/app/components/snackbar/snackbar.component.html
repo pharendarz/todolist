@@ -1,0 +1,18 @@
+<div
+  class="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-indigo-500 text-white py-3 px-5 rounded-md shadow-lg flex items-center justify-between w-full max-w-sm z-[5000]"
+  [ngClass]="content?.error ? 'bg-red-500' : 'bg-indigo-500'"
+  [@snackbarAnimation]
+>
+  <p class="text-sm font-medium">{{ content?.message }}</p>
+  <button
+    (click)="close()"
+    class="bg-indigo-700 hover:bg-indigo-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+    [ngClass]="
+      content?.error
+        ? 'bg-red-700 hover:bg-red-800'
+        : 'bg-indigo-700 hover:bg-indigo-800'
+    "
+  >
+    Close
+  </button>
+</div>

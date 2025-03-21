@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { selectAllTodos } from '../store/list.selectors';
+import { selectAllTodos } from '@store/list.selectors';
 import { Store } from '@ngrx/store';
-import { Todo } from '../models/todo.model';
-import { parseDate } from '../tools/custom-form-validators/date-format-validator';
+import { Todo } from '@models/todo.model';
+import { parseDate } from '@tools/custom-form-validators/date-format-validator';
 
 @Injectable({
   providedIn: 'root',

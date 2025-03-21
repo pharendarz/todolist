@@ -1,4 +1,3 @@
-import { parse } from './../../../../node_modules/@fortawesome/fontawesome-svg-core/index.d';
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 export function dateFormatValidator(): ValidatorFn {

@@ -1,104 +1,66 @@
-import {
-  Component,
-  ElementRef,
-  HostListener,
-  OnInit,
-  signal,
-  ViewChild,
-} from '@angular/core';
-import {
-  addTodo,
-  hideEmptyTodos,
-  showEmptyTodos,
-} from '../../store/list.actions';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { addTodo } from '../../store/list.actions';
 import { Todo } from '../../models/todo.model';
 import { Store } from '@ngrx/store';
 import { selectAllTodos } from '../../store/list.selectors';
 import {
-  BehaviorSubject,
   catchError,
   combineLatest,
   debounceTime,
   map,
   Observable,
   of,
+  shareReplay,
   switchMap,
+  takeUntil,
   tap,
 } from 'rxjs';
-import { faFilter } from '@fortawesome/free-solid-svg-icons';
-import { ListFilter } from '../../enums/list-filter.enum';
-import { DataTransferService } from '../../services/data-transfer.service';
-import { WeatherResponseDto } from '../../models/dto/weather.response';
-import { LocalStorageService } from '../../services/local-storage.service';
-import { Value } from '../../enums/value.enum';
+import { DataTransferService } from '@services/data-transfer.service';
+import { WeatherResponseDto } from '@models/dto/weather.response';
+import { Value } from '@enums/value.enum';
+import { BaseComponent } from '@components/base/base.component';
+import { CustomSnackbarComponent } from '@components/snackbar/snackbar.component';
+import { CommonModule } from '@angular/common';
+import { SpinnerComponent } from '@components/spinner/spinner.component';
+import { TemperatureColorPipe } from '@pipes/temperature-color.pipe';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FilterComponent } from './filter/filter.component';
+import { SearchTextService } from '@services/search-text.service';
 
 @Component({
   selector: 'todo-list',
   templateUrl: './list.component.html',
   styleUrl: './list.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    CustomSnackbarComponent,
+    SpinnerComponent,
+    CommonModule,
+    TemperatureColorPipe,
+    FontAwesomeModule,
+    FilterComponent,
+  ],
 })
-export class ListComponent implements OnInit {
-  @ViewChild('filterMenu', { static: false }) filterMenu!: ElementRef;
-
-  // todo move filter to separate component
-  protected faFilter = faFilter;
-  protected isSubMenuOpen = false;
-  protected hideEmpty = false;
-  protected listFilter = ListFilter;
+export class ListComponent extends BaseComponent {
   protected empty = Value.Empty;
-  protected currentFilter?: ListFilter;
-
-  private searchTextSubject = new BehaviorSubject<string>('');
   protected filteredTodos$: Observable<Todo[]>;
-
-  protected searchText = '';
 
   protected isLoading = signal(true);
 
   constructor(
     private store: Store,
     private readonly dataTransferService: DataTransferService,
-    private readonly lss: LocalStorageService,
+    private searchTextService: SearchTextService,
   ) {
-    this.filteredTodos$ = this.loadStore();
-  }
-
-  ngOnInit(): void {
-    // Load filters from lss
-    const filterValue = this.lss.getItem('listFilter');
-    const searchValue = this.lss.getItem('listSearch');
-
-    if (filterValue) {
-      this.currentFilter = JSON.parse(filterValue).value;
-    }
-    if (searchValue) {
-      this.searchText = JSON.parse(searchValue).value;
-      this.searchTextSubject.next(this.searchText);
-    }
-  }
-
-  set localStorageItem(lssItem: { key: string; value: string }) {
-    this.lss.setItem(
-      lssItem.key,
-      JSON.stringify({
-        value: lssItem.value,
-      }),
-    );
-  }
-
-  @HostListener('document:click', ['$event.target'])
-  protected onClickOutside(target: HTMLElement) {
-    // Close menu if the click is outside of the sub-menu container
-    if (this.filterMenu && !this.filterMenu.nativeElement.contains(target)) {
-      this.isSubMenuOpen = false;
-    }
+    super();
+    this.filteredTodos$ = this.loadStore().pipe(takeUntil(this.destroy$));
   }
 
   private loadStore(): Observable<Todo[]> {
-    return combineLatest([
-      this.store.select(selectAllTodos),
-      this.searchTextSubject.asObservable(),
-    ]).pipe(
+    const todos$ = this.store.select(selectAllTodos);
+    const search$ = this.searchTextService.searchText$ || of('');
+    return combineLatest([todos$, search$]).pipe(
       // Wait briefly for the user to stop typing
       debounceTime(500),
 
@@ -117,10 +79,15 @@ export class ListComponent implements OnInit {
       tap(() => this.isLoading.set(false)),
 
       // Fallback if something unexpected fails
-      catchError(() => {
+      catchError((err) => {
+        this.showSnackbarMessage({
+          message: 'Error loading todos: ' + err,
+          error: true,
+        });
         this.isLoading.set(false);
         return of([]);
       }),
+      shareReplay(1),
     );
   }
 
@@ -163,14 +130,26 @@ export class ListComponent implements OnInit {
                 // Replace only the first todo in the result
                 return [updatedFirst, ...todos.slice(1)];
               }),
-              catchError(() => of(todos)), // Return original todos if weather fails
+              catchError((err) => {
+                this.showSnackbarMessage({
+                  message: 'Weather fetch failed: ' + err,
+                  error: true,
+                });
+                return of(todos);
+              }), // Return original todos if weather fails
             );
         }),
-        catchError(() => of(todos)), // Return original todos if geocoding fails
+        catchError((err) => {
+          this.showSnackbarMessage({
+            message: 'Geocoding fetch failed: ' + err,
+            error: true,
+          });
+          return of(todos);
+        }), // Return original todos if geocoding fails
       );
   }
 
-  private extractWeatherData(weatherData: WeatherResponseDto): string {
+  private extractWeatherData(weatherData: WeatherResponseDto | null): string {
     const temperature = weatherData?.current?.temperature_2m;
     const temperatureUnit = weatherData?.current_units?.temperature_2m;
     if (!temperature || !temperatureUnit) {
@@ -181,46 +160,5 @@ export class ListComponent implements OnInit {
 
   protected onAddTodo(newTodo: Todo): void {
     this.store.dispatch(addTodo({ todo: newTodo }));
-  }
-
-  protected onFilterClick(): void {
-    this.isSubMenuOpen = !this.isSubMenuOpen;
-  }
-
-  protected onSearchChange(value: string): void {
-    this.localStorageItem = {
-      key: 'listSearch',
-      value,
-    };
-    this.searchTextSubject.next(value);
-  }
-
-  protected onHideEmpty(): void {
-    this.isSubMenuOpen = false;
-    this.currentFilter = ListFilter.HideEmpty;
-
-    this.localStorageItem = {
-      key: 'listFilter',
-      value: ListFilter.HideEmpty,
-    };
-
-    this.store.dispatch(hideEmptyTodos());
-  }
-
-  protected onShowAll(): void {
-    this.isSubMenuOpen = false;
-    this.searchText = '';
-
-    this.lss.removeItem('listSearch');
-
-    this.currentFilter = ListFilter.ShowAll;
-
-    this.localStorageItem = {
-      key: 'listFilter',
-      value: ListFilter.ShowAll,
-    };
-
-    this.store.dispatch(showEmptyTodos());
-    this.searchTextSubject.next(this.searchText);
   }
 }

@@ -11,13 +11,13 @@ function dateToIsoString(date: Date, addDays: number = 0): string {
 export const initialState: TodosState = {
   list: [
     {
-      date: dateToIsoString(new Date(), 1),
+      date: dateToIsoString(new Date(), -15),
       location: 'Prospect Creek',
       content: 'Alaska',
       display: true,
     },
     {
-      date: dateToIsoString(new Date(), 1),
+      date: dateToIsoString(new Date(), -15),
       location: 'Furnace Creek',
       content: 'Death Valley, California (USA)',
       display: true,

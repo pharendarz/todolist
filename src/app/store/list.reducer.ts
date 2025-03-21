@@ -1,14 +1,12 @@
 import { createReducer, on } from '@ngrx/store';
-import { Todo } from '../models/todo.model';
-import { addTodo, hideEmptyTodos, showEmptyTodos } from './list.actions';
-import { initialState } from './initial.list';
+import { Todo } from '@models/todo.model';
+import { addTodo, hideEmptyTodos, showEmptyTodos } from '@store/list.actions';
+import { initialState } from '@store/initial.list';
 
 export interface TodosState {
   list: Todo[];
 }
-// todo fix dates to be in the same format with date-helper
 
-// on add todo, add the todo to the list
 export const todosReducer = createReducer(
   initialState,
   on(addTodo, (state, { todo }) => ({
