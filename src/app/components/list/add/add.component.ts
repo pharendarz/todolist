@@ -1,21 +1,17 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ViewEncapsulation,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Todo } from '../../../models/todo.model';
+import { Todo } from '@models/todo.model';
 import { Store } from '@ngrx/store';
-import { addTodo } from '../../../store/list.actions';
-import { dateFormatValidator } from '../../../tools/custom-form-validators/date-format-validator';
-import { CounterService } from '../../../services/counter.service';
-import { BaseComponent } from '../../base/base.component';
-import { CustomSnackbarComponent } from '../../snackbar/snackbar.component';
+import { addTodo } from '@store/list.actions';
+import { dateFormatValidator } from '@tools/custom-form-validators/date-format-validator';
+import { CounterService } from '@services/counter.service';
+import { BaseComponent } from '@components/base/base.component';
+import { CustomSnackbarComponent } from '@components/snackbar/snackbar.component';
 import { CommonModule } from '@angular/common';
 @Component({
   selector: 'todo-add',

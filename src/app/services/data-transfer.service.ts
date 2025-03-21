@@ -1,8 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable, retry } from 'rxjs';
-import { GeoLocationDto } from '../models/dto/geolocation.response';
-import { WeatherResponseDto } from '../models/dto/weather.response';
+import { GeoLocationDto } from '@models/dto/geolocation.response';
+import { WeatherResponseDto } from '@models/dto/weather.response';
 
 @Injectable({
   providedIn: 'root',

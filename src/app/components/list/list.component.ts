@@ -28,16 +28,16 @@ import {
   tap,
 } from 'rxjs';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
-import { ListFilter } from '../../enums/list-filter.enum';
-import { DataTransferService } from '../../services/data-transfer.service';
-import { WeatherResponseDto } from '../../models/dto/weather.response';
-import { LocalStorageService } from '../../services/local-storage.service';
-import { Value } from '../../enums/value.enum';
-import { BaseComponent } from '../base/base.component';
-import { CustomSnackbarComponent } from '../snackbar/snackbar.component';
+import { ListFilter } from '@enums/list-filter.enum';
+import { DataTransferService } from '@services/data-transfer.service';
+import { WeatherResponseDto } from '@models/dto/weather.response';
+import { LocalStorageService } from '@services/local-storage.service';
+import { Value } from '@enums/value.enum';
+import { BaseComponent } from '@components/base/base.component';
+import { CustomSnackbarComponent } from '@components/snackbar/snackbar.component';
 import { CommonModule } from '@angular/common';
-import { SpinnerComponent } from '../spinner/spinner.component';
-import { TemperatureColorPipe } from '../../pipes/temperature-color.pipe';
+import { SpinnerComponent } from '@components/spinner/spinner.component';
+import { TemperatureColorPipe } from '@pipes/temperature-color.pipe';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FormsModule } from '@angular/forms';
 

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { faGhost } from '@fortawesome/free-solid-svg-icons';
-import { CounterService } from '../../services/counter.service';
+import { CounterService } from '@services/counter.service';
 
 @Component({
   selector: 'todo-header',

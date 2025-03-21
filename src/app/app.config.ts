@@ -1,7 +1,5 @@
-// todo additionaly - provide linter to the project
 // todo additionaly - provide unit tests to the project
 // todo create @imports for the project
-// todo lazy loading
 // todo create aot build
 // todo change components to directives where possible
 // todo erase all dead imports
