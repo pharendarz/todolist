@@ -1,4 +1,4 @@
-import { Directive, OnDestroy } from '@angular/core';
+import { Directive, HostListener, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 
 @Directive({
@@ -10,6 +10,7 @@ export class BaseComponent implements OnDestroy {
 
   protected showSnackbar = false;
   protected snackbarMessage?: { message: string; error?: boolean };
+  protected isMobile: boolean = false;
 
   protected showSnackbarMessage(content: {
     message: string;
@@ -22,5 +23,16 @@ export class BaseComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(): void {
+    this.checkScreenSize();
+  }
+
+  checkScreenSize(): void {
+    if (typeof window !== 'undefined') {
+      this.isMobile = window.innerWidth <= 768;
+    }
   }
 }

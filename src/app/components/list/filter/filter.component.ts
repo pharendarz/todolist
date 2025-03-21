@@ -7,6 +7,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { BaseComponent } from '@components/base/base.component';
 import { ListFilter } from '@enums/list-filter.enum';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
@@ -21,7 +22,7 @@ import { hideEmptyTodos, showEmptyTodos } from '@store/list.actions';
   imports: [CommonModule, FontAwesomeModule, FormsModule],
   templateUrl: './filter.component.html',
 })
-export class FilterComponent implements OnInit {
+export class FilterComponent extends BaseComponent implements OnInit {
   @ViewChild('filterMenu', { static: false }) filterMenu!: ElementRef;
 
   protected faFilter = faFilter;
@@ -44,9 +45,13 @@ export class FilterComponent implements OnInit {
     private readonly lss: LocalStorageService,
     private store: Store,
     private searchTextService: SearchTextService,
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
+    this.checkScreenSize();
+
     // Load filters from lss
     const filterValue = this.lss.getItem('listFilter');
     const searchValue = this.lss.getItem('listSearch');

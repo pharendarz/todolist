@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -20,7 +20,7 @@ import { CommonModule } from '@angular/common';
   imports: [CustomSnackbarComponent, CommonModule, ReactiveFormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddComponent extends BaseComponent {
+export class AddComponent extends BaseComponent implements OnInit {
   protected form: FormGroup;
 
   constructor(
@@ -38,6 +38,10 @@ export class AddComponent extends BaseComponent {
       content: [{ value: '', disabled: false }, Validators.required],
       display: { value: true, disabled: false },
     });
+  }
+
+  ngOnInit(): void {
+    this.checkScreenSize();
   }
 
   protected onSubmit(): void {

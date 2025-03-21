@@ -1,76 +1,85 @@
-<todo-filter></todo-filter>
+<div class="list-container overflow-y-auto h-[calc(100vh)]">
+  <todo-filter></todo-filter>
+  <!-- Todo counter -->
+  <div
+    class="mx-auto mt-2 text-gray-600 text-xs text-right"
+    [ngClass]="{ 'w-4/5': isMobile, 'w-3/5': !isMobile }"
+  >
+    Total todos: {{ (filteredTodos$ | async)?.length || 0 }}
+  </div>
 
-<!-- Todo counter -->
-<div class="w-4/5 mx-auto mt-2 text-gray-600 text-xs text-right">
-  Total todos: {{ (filteredTodos$ | async)?.length || 0 }}
-</div>
+  <div
+    class="mt-4 space-y-4 mx-auto"
+    [ngClass]="{ 'w-4/5': isMobile, 'w-3/5': !isMobile }"
+  >
+    @for (todo of filteredTodos$ | async; track i; let i = $index) {
+      <div
+        class="p-4 border bg-white border-gray-200 rounded-md shadow-sm"
+        [ngClass]="{
+          empty: !todo.date && !todo.location && !todo.content,
+        }"
+      >
+        <!-- Grid container -->
+        <div class="grid grid-cols-2 gap-4">
+          <!-- Left column -->
+          @if (todo.date && todo.location && todo.content) {
+            <div>
+              <p class="text-sm text-gray-700 font-medium">
+                <span class="text-gray-400">Date:</span> {{ todo.date }}
+              </p>
+              <p class="text-sm text-gray-700 font-medium mt-1">
+                <span class="text-gray-400">Location:</span>
+                {{ todo.location }}
+              </p>
+              <p class="text-sm text-gray-700 font-medium mt-1">
+                <span class="text-gray-400">Content:</span>
+                {{ todo.content }}
+              </p>
+            </div>
 
-<div class="mt-4 space-y-4 w-4/5 mx-auto">
-  @for (todo of filteredTodos$ | async; track i; let i = $index) {
-    <div
-      class="p-4 border bg-white border-gray-200 rounded-md shadow-sm"
-      [ngClass]="{
-        empty: !todo.date && !todo.location && !todo.content,
-      }"
-    >
-      <!-- Grid container -->
-      <div class="grid grid-cols-2 gap-4">
-        <!-- Left column -->
-        @if (todo.date && todo.location && todo.content) {
-          <div>
-            <p class="text-sm text-gray-700 font-medium">
-              <span class="text-gray-400">Date:</span> {{ todo.date }}
-            </p>
-            <p class="text-sm text-gray-700 font-medium mt-1">
-              <span class="text-gray-400">Location:</span>
-              {{ todo.location }}
-            </p>
-            <p class="text-sm text-gray-700 font-medium mt-1">
-              <span class="text-gray-400">Content:</span>
-              {{ todo.content }}
-            </p>
-          </div>
-
-          <!-- Right column -->
-          <div>
-            @if (i === 0 && todo.long && todo.lat) {
-              <p class="text-sm font-medium mt-1">
-                <span class="text-gray-400">Longitude:</span>
-                {{ todo.long || empty }}
-              </p>
-              <p class="text-sm font-medium mt-1">
-                <span class="text-gray-400">Latitude:</span>
-                {{ todo.lat || empty }}
-              </p>
-              <p class="text-sm font-medium mt-1">
-                <span class="text-gray-400">Weather:</span>
-                <span [class]="todo.temperature | temperatureColor">
-                  {{ todo.temperature || empty }}
-                </span>
-              </p>
-            } @else if (i === 0 && !todo.long && !todo.lat) {
-              <p class="text-sm font-medium mt-1">
-                <span class="text-red-400">Can't find location long & lat</span>
-              </p>
-            }
-          </div>
-        }
+            <!-- Right column -->
+            <div>
+              @if (i === 0 && todo.long && todo.lat) {
+                <p class="text-sm font-medium mt-1">
+                  <span class="text-gray-400">Longitude:</span>
+                  {{ todo.long || empty }}
+                </p>
+                <p class="text-sm font-medium mt-1">
+                  <span class="text-gray-400">Latitude:</span>
+                  {{ todo.lat || empty }}
+                </p>
+                <p class="text-sm font-medium mt-1">
+                  <span class="text-gray-400">Weather:</span>
+                  <span [class]="todo.temperature | temperatureColor">
+                    {{ todo.temperature || empty }}
+                  </span>
+                </p>
+              } @else if (i === 0 && !todo.long && !todo.lat) {
+                <p class="text-sm font-medium mt-1">
+                  <span class="text-red-400"
+                    >Can't find location long & lat</span
+                  >
+                </p>
+              }
+            </div>
+          }
+        </div>
       </div>
-    </div>
+    }
+  </div>
+
+  @if (!(filteredTodos$ | async)?.length) {
+    <p class="text-center mt-4 text-gray-700">No todos found</p>
+  }
+
+  @if (isLoading()) {
+    <todo-spinner></todo-spinner>
+  }
+
+  @if (showSnackbar) {
+    <todo-snackbar
+      [content]="snackbarMessage"
+      (closed)="showSnackbar = false"
+    ></todo-snackbar>
   }
 </div>
-
-@if (!(filteredTodos$ | async)?.length) {
-  <p class="text-center mt-4 text-gray-700">No todos found</p>
-}
-
-@if (isLoading()) {
-  <todo-spinner></todo-spinner>
-}
-
-@if (showSnackbar) {
-  <todo-snackbar
-    [content]="snackbarMessage"
-    (closed)="showSnackbar = false"
-  ></todo-snackbar>
-}

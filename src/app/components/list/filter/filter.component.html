@@ -1,4 +1,7 @@
-<div class="flex items-center space-x-2 pt-20 w-4/5 mx-auto">
+<div
+  class="flex items-center space-x-2 pt-20 mx-auto"
+  [ngClass]="{ 'w-4/5': isMobile, 'w-3/5': !isMobile }"
+>
   <input
     id="searchText"
     type="text"

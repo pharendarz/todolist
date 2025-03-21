@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  HostListener,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { addTodo } from '../../store/list.actions';
 import { Todo } from '../../models/todo.model';
 import { Store } from '@ngrx/store';
@@ -42,7 +48,7 @@ import { SearchTextService } from '@services/search-text.service';
     FilterComponent,
   ],
 })
-export class ListComponent extends BaseComponent {
+export class ListComponent extends BaseComponent implements OnInit {
   protected empty = Value.Empty;
   protected filteredTodos$: Observable<Todo[]>;
 
@@ -55,6 +61,10 @@ export class ListComponent extends BaseComponent {
   ) {
     super();
     this.filteredTodos$ = this.loadStore().pipe(takeUntil(this.destroy$));
+  }
+
+  ngOnInit(): void {
+    this.checkScreenSize();
   }
 
   private loadStore(): Observable<Todo[]> {

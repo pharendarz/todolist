@@ -2,7 +2,8 @@
   <form
     (ngSubmit)="onSubmit()"
     [formGroup]="form"
-    class="space-y-4 w-3/4 max-w-md p-4 border bg-indigo-100 border-gray-200 rounded-md shadow-sm"
+    class="space-y-4 max-w-md p-4 border bg-indigo-100 border-gray-200 rounded-md shadow-sm"
+    [ngClass]="{ 'w-4/5': isMobile, 'w-3/5': !isMobile }"
   >
     <h2 class="text-2xl font-bold text-gray-800 text-center">
       New list element
