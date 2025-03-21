@@ -1,11 +1,3 @@
-// todo change components to directives where possible
-// todo split components to smaller ones
-// clean tailwind from unused classes p=text-grey-500
-// todo add more tests
-// go through all types and put them in separtate files
-// todo clean github (set repos as private)
-// todo add protected & readonly to all properties
-// todo clean unused scss and scss url in component
 import {
   ApplicationConfig,
   importProvidersFrom,

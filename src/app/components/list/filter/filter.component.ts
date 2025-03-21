@@ -20,7 +20,6 @@ import { hideEmptyTodos, showEmptyTodos } from '@store/list.actions';
   standalone: true,
   imports: [CommonModule, FontAwesomeModule, FormsModule],
   templateUrl: './filter.component.html',
-  styleUrl: './filter.component.scss',
 })
 export class FilterComponent implements OnInit {
   @ViewChild('filterMenu', { static: false }) filterMenu!: ElementRef;

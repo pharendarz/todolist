@@ -17,7 +17,6 @@ import {
 } from 'rxjs';
 import { DataTransferService } from '@services/data-transfer.service';
 import { WeatherResponseDto } from '@models/dto/weather.response';
-import { LocalStorageService } from '@services/local-storage.service';
 import { Value } from '@enums/value.enum';
 import { BaseComponent } from '@components/base/base.component';
 import { CustomSnackbarComponent } from '@components/snackbar/snackbar.component';

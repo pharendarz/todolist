@@ -1,12 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import { Directive, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 
-@Component({
+@Directive({
   selector: 'todo-base',
   standalone: true,
-  imports: [],
-  templateUrl: './base.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BaseComponent implements OnDestroy {
   protected readonly destroy$ = new Subject<void>();

@@ -9,6 +9,7 @@ import { WeatherResponseDto } from '@models/dto/weather.response';
 })
 export class DataTransferService {
   constructor(private readonly httpClient: HttpClient) {}
+
   private readonly httpOptions = <const>{
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
@@ -16,6 +17,7 @@ export class DataTransferService {
     observe: 'response',
     responseType: 'json',
   };
+
   private fetch<T>(url: string): Observable<T | null> {
     return this.httpClient.get<T>(url, this.httpOptions).pipe(
       map((response) => response.body),

@@ -11,7 +11,6 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'todo-snackbar',
   templateUrl: './snackbar.component.html',
-  styleUrls: ['./snackbar.component.scss'],
   standalone: true,
   imports: [CommonModule],
   animations: [
@@ -28,8 +27,8 @@ import { CommonModule } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CustomSnackbarComponent {
-  @Input() content?: { message: string; error?: boolean };
-  @Output() closed = new EventEmitter<void>();
+  @Input() public content?: { message: string; error?: boolean };
+  @Output() protected closed = new EventEmitter<void>();
 
   close(): void {
     this.closed.emit();

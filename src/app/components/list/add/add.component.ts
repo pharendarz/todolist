@@ -16,7 +16,6 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'todo-add',
   templateUrl: './add.component.html',
-  styleUrl: './add.component.scss',
   standalone: true,
   imports: [CustomSnackbarComponent, CommonModule, ReactiveFormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
