@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'todo-base',
@@ -7,7 +8,9 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   templateUrl: './base.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BaseComponent {
+export class BaseComponent implements OnDestroy {
+  protected readonly destroy$ = new Subject<void>();
+
   protected showSnackbar = false;
   protected snackbarMessage?: { message: string; error?: boolean };
 
@@ -17,5 +20,10 @@ export class BaseComponent {
   }): void {
     this.showSnackbar = true;
     this.snackbarMessage = content;
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

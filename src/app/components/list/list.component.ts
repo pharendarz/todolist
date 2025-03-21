@@ -25,6 +25,7 @@ import {
   of,
   shareReplay,
   switchMap,
+  takeUntil,
   tap,
 } from 'rxjs';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
@@ -80,7 +81,7 @@ export class ListComponent extends BaseComponent implements OnInit {
     private readonly lss: LocalStorageService,
   ) {
     super();
-    this.filteredTodos$ = this.loadStore();
+    this.filteredTodos$ = this.loadStore().pipe(takeUntil(this.destroy$));
   }
 
   ngOnInit(): void {
