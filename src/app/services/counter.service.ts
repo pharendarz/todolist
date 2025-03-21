@@ -3,6 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import { selectAllTodos } from '../store/list.selectors';
 import { Store } from '@ngrx/store';
 import { Todo } from '../models/todo.model';
+import { parseDate } from '../tools/custom-form-validators/date-format-validator';
 
 @Injectable({
   providedIn: 'root',
@@ -16,13 +17,11 @@ export class CounterService {
 
   private filterTodayOrFutureTodos(todos: Todo[]): Todo[] {
     const today = new Date();
-
+    today.setHours(0, 0, 0, 0);
     return todos.filter((todo) => {
       if (!todo.date) return false;
-
-      const todoDate = new Date(todo.date);
-
-      return todoDate >= today && todo.display;
+      const dateObj = parseDate(todo.date).date;
+      return dateObj >= today && todo.display;
     });
   }
 

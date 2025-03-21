@@ -1,0 +1,27 @@
+.empty {
+  background-image: linear-gradient(
+    45deg,
+    #4f39f6 25%,
+    #7c86ff 25%,
+    #7c86ff 50%,
+    #4f39f6 50%,
+    #4f39f6 75%,
+    #7c86ff 75%,
+    #7c86ff 100%
+  );
+  background-size: 56.57px 56.57px;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "EMPTY";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2rem;
+    color: rgba(255, 255, 255, 0.475);
+    z-index: 1;
+    pointer-events: none;
+  }
+}

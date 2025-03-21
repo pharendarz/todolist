@@ -35,10 +35,9 @@ export class AddComponent {
     const newTodo: Todo = this.form.value;
     // newTodo.date = new Date().toISOString();
     this.store.dispatch(addTodo({ todo: newTodo }));
-    console.warn('New todo:', newTodo);
     this.form.reset();
     this.counterService.setCounter();
-    this.snackBar.open('Todo added!', 'Close', {
+    this.snackBar.open('Todo added!', '', {
       duration: 3000,
     });
   }

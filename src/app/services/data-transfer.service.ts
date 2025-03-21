@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable, shareReplay } from 'rxjs';
+import { map, Observable, retry, shareReplay } from 'rxjs';
 import { GeoLocationDto } from '../models/dto/geolocation.response';
 
 @Injectable({
@@ -16,17 +16,15 @@ export class DataTransferService {
     responseType: 'json',
   };
   private fetch<T>(url: string): Observable<T | null> {
-    return this.httpClient
-      .get<T>(url, this.httpOptions)
-      .pipe(map((response) => response.body));
+    return this.httpClient.get<T>(url, this.httpOptions).pipe(
+      map((response) => response.body),
+      retry(3),
+    );
   }
 
   public getGeocodingLongLat(
     location: string,
   ): Observable<GeoLocationDto | null> {
-    // if (!location) {
-    //   location = 'NONE';
-    // }
     return this.fetch<GeoLocationDto>(
       `/geocode-api/v1/search?name=${location}&count=10&language=pl&format=json`,
     ).pipe(shareReplay(1));

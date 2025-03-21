@@ -1,4 +1,11 @@
-import { Component, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  HostListener,
+  OnInit,
+  signal,
+  ViewChild,
+} from '@angular/core';
 import {
   addTodo,
   hideEmptyTodos,
@@ -23,6 +30,7 @@ import { ListFilter } from '../../enums/list-filter.enum';
 import { DataTransferService } from '../../services/data-transfer.service';
 import { WeatherResponseDto } from '../../models/dto/weather.response';
 import { LocalStorageService } from '../../services/local-storage.service';
+import { Value } from '../../enums/value.enum';
 
 @Component({
   selector: 'todo-list',
@@ -30,11 +38,14 @@ import { LocalStorageService } from '../../services/local-storage.service';
   styleUrl: './list.component.scss',
 })
 export class ListComponent implements OnInit {
+  @ViewChild('filterMenu', { static: false }) filterMenu!: ElementRef;
+
   // todo move filter to separate component
   protected faFilter = faFilter;
   protected isSubMenuOpen = false;
   protected hideEmpty = false;
   protected listFilter = ListFilter;
+  protected empty = Value.Empty;
   protected currentFilter?: ListFilter;
 
   private searchTextSubject = new BehaviorSubject<string>('');
@@ -75,65 +86,88 @@ export class ListComponent implements OnInit {
     );
   }
 
-  private loadStore() {
+  @HostListener('document:click', ['$event.target'])
+  protected onClickOutside(target: HTMLElement) {
+    // Close menu if the click is outside of the sub-menu container
+    if (this.filterMenu && !this.filterMenu.nativeElement.contains(target)) {
+      this.isSubMenuOpen = false;
+    }
+  }
+
+  private loadStore(): Observable<Todo[]> {
     return combineLatest([
       this.store.select(selectAllTodos),
       this.searchTextSubject.asObservable(),
     ]).pipe(
+      // Wait briefly for the user to stop typing
       debounceTime(500),
-      // Filter by search text
-      map(([todos, search]) => {
-        // Show loading spinner
-        this.isLoading.set(true);
 
-        const displayed = todos.filter((todo) => todo.display);
-        return displayed.filter((todo) =>
-          todo.location?.toLowerCase().includes(search.toLowerCase()),
-        );
-      }),
-      // Then run geocoding on the first filtered todo
-      switchMap((todos) => {
-        const firstTodo = todos[0];
-        if (!firstTodo) {
-          return of(todos);
-        }
-        return this.dataTransferService
-          .getGeocodingLongLat(firstTodo.location)
-          .pipe(
-            switchMap((geoData) => {
-              const loc = geoData?.results?.[0];
-              if (!loc) {
-                // No location found, just return todos
-                return of(todos);
-              }
-              // If location found, fetch weather
-              return this.dataTransferService
-                .getWeather(loc.longitude, loc.latitude)
-                .pipe(
-                  map((weatherData) => {
-                    const updatedFirst = {
-                      ...firstTodo,
-                      long: loc.longitude,
-                      lat: loc.latitude,
-                      temperature: this.extractWeatherData(weatherData),
-                    };
-                    // Replace only the first todo
-                    return [updatedFirst, ...todos.slice(1)];
-                  }),
-                  catchError(() => {
-                    // On error, just return the original todos
-                    return of(todos);
-                  }),
-                );
-            }),
-            catchError(() => of(todos)),
-          );
-      }),
-      tap(() => {
-        // Hide loading spinner
+      // Show spinner as soon as load starts
+      tap(() => this.isLoading.set(true)),
+
+      // 1) Filter todos by search text
+      map(([todos, search]) => this.filterBySearch(todos, search)),
+
+      // 2) Attempt geocoding & weather for the first filtered todo
+      switchMap((filteredTodos) =>
+        this.processGeocodeAndWeather(filteredTodos),
+      ),
+
+      // Hide spinner
+      tap(() => this.isLoading.set(false)),
+
+      // Fallback if something unexpected fails
+      catchError(() => {
         this.isLoading.set(false);
+        return of([]);
       }),
     );
+  }
+
+  /** Filters only displayed todos and matches location to the search text */
+  private filterBySearch(allTodos: Todo[], search: string): Todo[] {
+    const displayed = allTodos.filter((todo) => todo.display);
+    return displayed.filter((todo) =>
+      todo.location?.toLowerCase().includes(search.toLowerCase()),
+    );
+  }
+
+  /**
+   Looks up geocoding for the first todo in the list,
+   then fetches weather if available.
+   */
+  private processGeocodeAndWeather(todos: Todo[]): Observable<Todo[]> {
+    const firstTodo = todos[0];
+    if (!firstTodo) {
+      return of(todos);
+    }
+
+    return this.dataTransferService
+      .getGeocodingLongLat(firstTodo.location)
+      .pipe(
+        switchMap((geoData) => {
+          const loc = geoData?.results?.[0];
+          if (!loc) {
+            return of(todos);
+          }
+          return this.dataTransferService
+            .getWeather(loc.longitude, loc.latitude)
+            .pipe(
+              map((weatherData) => {
+                const updatedFirst: Todo = {
+                  ...firstTodo,
+                  long: loc.longitude,
+                  lat: loc.latitude,
+                  temperature: this.extractWeatherData(weatherData),
+                };
+                // Replace only the first todo in the result
+                return [updatedFirst, ...todos.slice(1)];
+              }),
+              catchError(() => of(todos)), // Return original todos if weather fails
+            );
+        }),
+        catchError(() => of(todos)), // Return original todos if geocoding fails
+      );
   }
 
   private extractWeatherData(weatherData: WeatherResponseDto): string {
@@ -164,19 +198,23 @@ export class ListComponent implements OnInit {
   protected onHideEmpty(): void {
     this.isSubMenuOpen = false;
     this.currentFilter = ListFilter.HideEmpty;
+
     this.localStorageItem = {
       key: 'listFilter',
       value: ListFilter.HideEmpty,
     };
+
     this.store.dispatch(hideEmptyTodos());
   }
 
   protected onShowAll(): void {
     this.isSubMenuOpen = false;
     this.searchText = '';
+
     this.lss.removeItem('listSearch');
 
     this.currentFilter = ListFilter.ShowAll;
+
     this.localStorageItem = {
       key: 'listFilter',
       value: ListFilter.ShowAll,

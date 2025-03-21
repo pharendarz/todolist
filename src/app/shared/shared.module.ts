@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { TextFilterPipe } from '../pipes/text-filter.pipe';
+import { TemperatureColorPipe } from '../pipes/temperature-color.pipe';
 
 @NgModule({
-  declarations: [TextFilterPipe],
+  declarations: [TemperatureColorPipe],
   imports: [FontAwesomeModule],
-  exports: [FontAwesomeModule, TextFilterPipe],
+  exports: [FontAwesomeModule, TemperatureColorPipe],
 })
 export class SharedModule {}

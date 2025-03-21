@@ -10,6 +10,7 @@
 // todo create base component with ngDestroy
 // go through all types and put them in separtate files
 // todo refactor modules
+// todo guards for routes - 404 page
 import {
   ApplicationConfig,
   importProvidersFrom,
