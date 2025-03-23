@@ -150,7 +150,6 @@ export class ListComponent extends BaseComponent implements OnInit {
             );
         }),
         catchError((err) => {
-          console.warn(err);
           this.showSnackbarMessage({
             message: 'Geocoding fetch failed: ' + err.message,
             error: true,
