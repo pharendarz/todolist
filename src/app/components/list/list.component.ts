@@ -142,7 +142,8 @@ export class ListComponent extends BaseComponent implements OnInit {
               }),
               catchError((err) => {
                 this.showSnackbarMessage({
-                  message: 'Weather fetch failed: ' + err.message,
+                  message:
+                    'Weather fetch failed: ' + this.constructErrorMessage(err),
                   error: true,
                 });
                 return of(todos);
@@ -151,7 +152,8 @@ export class ListComponent extends BaseComponent implements OnInit {
         }),
         catchError((err) => {
           this.showSnackbarMessage({
-            message: 'Geocoding fetch failed: ' + err.message,
+            message:
+              'Geocoding fetch failed: ' + this.constructErrorMessage(err),
             error: true,
           });
           return of(todos);

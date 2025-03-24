@@ -1,4 +1,5 @@
 import { Directive, HostListener, OnDestroy } from '@angular/core';
+import { Error } from '@models/error.model';
 import { Subject } from 'rxjs';
 
 @Directive({
@@ -30,9 +31,15 @@ export class BaseComponent implements OnDestroy {
     this.checkScreenSize();
   }
 
-  checkScreenSize(): void {
+  protected checkScreenSize(): void {
     if (typeof window !== 'undefined') {
       this.isMobile = window.innerWidth <= 768;
     }
+  }
+
+  protected constructErrorMessage(error: Error): string {
+    let errString = error?.message || 'An error occured';
+    errString = error.status ? `[${error.status}] ${errString}` : errString;
+    return errString;
   }
 }
