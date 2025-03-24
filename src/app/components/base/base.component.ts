@@ -38,8 +38,6 @@ export class BaseComponent implements OnDestroy {
   }
 
   protected constructErrorMessage(error: Error): string {
-    let errString = error?.message || 'An error occured';
-    errString = error.status ? `[${error.status}] ${errString}` : errString;
-    return errString;
+    return `[${error?.status ?? 'No Status'}] ${error?.message ?? 'An error occurred'}`;
   }
 }
